@@ -1,0 +1,84 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Check In or Check Out">
+    <meta name="author" content="Quyen Truong">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+    <title>Check In - Check Out</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header clearfix">
+        <h3 class="text-muted">Check In - Check Out</h3>
+        {{> loginButtons}}
+        <br>
+        <!--<span>Status: </span>-->
+        {{> currentStatus}}
+    </div>
+
+
+    <div class="row marketing">
+        <div class="col-lg-12">
+            {{> main}}
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2018 TechUp, Inc.</p>
+    </footer>
+
+</div> <!-- /container -->
+
+</body>
+
+<template name="currentStatus">
+    {{#if currentUser}}
+        <span>Status: </span>
+        {{getCurrentStatus}}
+    {{/if}}
+</template>
+
+
+<template name="main">
+    {{#if currentUser}}
+
+        <form class="d-inline add-checkIn">
+            <button class="btn btn-primary checkIn" type="submit">Check In</button>
+
+        </form>
+        <form class="d-inline add-checkOut">
+            <button class="btn btn-primary checkOut" type="submit">Check Out</button>
+        </form>
+
+    {{else}}
+        <p>User status:</p>
+    {{/if}}
+    <ul>
+        {{#if currentUser}}
+            {{#each ownerStatuses}}
+                {{> checkStatus}}
+            {{/each}}
+        {{else}}
+            {{#each checkStatuses}}
+                {{> checkStatus}}
+            {{/each}}
+        {{/if}}
+    </ul>
+</template>
+
+<template name="checkStatus">
+    <li>
+        <span id="username" >{{username}}</span> is {{text}}
+        <span class="rightElm">
+                {{time}}
+            {{#if isOwner}}
+                <button class="delete">&times;</button>
+            {{/if}}
+        </span>
+    </li>
+</template>
