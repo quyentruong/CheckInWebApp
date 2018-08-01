@@ -50,7 +50,7 @@ function insert(status) {
     if (status === "Out") {
         text = "Out";
     }
-    const time = moment().add(1, "day").format("MM/DD/YYYY HH:mm:ss");
+    const time = moment().format("MM/DD/YYYY HH:mm:ss");
     // let last = CheckStatus.findOne({owner: Meteor.userId()}, {fields: {_id: 1}, sort: {createdAt: -1}, limit: 1});
     // if (last !== undefined) {
     //     last = last._id;
@@ -94,16 +94,11 @@ Template.checkStatus.helpers({
 
 Template.main.rendered = function () {
     Tracker.autorun(() => {
-        let first = null, last = null;
+        let first = null;
         if (Meteor.userId()) {
             first = CheckStatus.findOne({owner: Meteor.userId()}, {
                 fields: {time: 1},
                 sort: {createdAt: 1},
-                limit: 1
-            });
-            last = CheckStatus.findOne({owner: Meteor.userId()}, {
-                fields: {time: 1},
-                sort: {createdAt: -1},
                 limit: 1
             });
         } else {
@@ -112,16 +107,10 @@ Template.main.rendered = function () {
                 sort: {createdAt: 1},
                 limit: 1
             });
-            last = publicStatus.findOne({}, {
-                fields: {time: 1},
-                sort: {createdAt: -1},
-                limit: 1
-            });
         }
-        if (first && last) {
+        if (first) {
             this.$('.datepicker').datepicker({
                 startDate: first.time.split(" ")[0],
-                endDate: last.time.split(" ")[0],
                 todayHighlight: true
             });
         }
