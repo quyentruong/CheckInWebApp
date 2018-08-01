@@ -16,6 +16,7 @@ boilerplate-generator@1.5.0
 caching-compiler@1.1.12
 caching-html-compiler@1.1.2
 callback-hook@1.1.0
+cezarybutler:bootstrap-datepicker@1.6.4
 check@1.3.1
 ddp@1.4.0
 ddp-client@2.3.2
