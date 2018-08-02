@@ -133,7 +133,7 @@ Template.main.rendered = () => {
                 opens: 'left',
                 minDate: first.time.split(" ")[0],
             }, function (start, end, label) {
-                $("#filter").click();
+                // $("#filter").click();
                 // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.add(1, 'day').format('YYYY-MM-DD'));
             });
 

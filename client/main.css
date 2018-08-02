@@ -100,7 +100,7 @@ li {
 }
 
 #filter{
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 
 .btn-primary {
