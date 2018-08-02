@@ -1,9 +1,10 @@
 import {Template} from 'meteor/templating';
 import {CheckStatus, publicStatus} from "../lib/collections";
 import {Accounts} from 'meteor/accounts-base';
-import './main.html';
-import {Meteor} from "meteor/meteor";
+
 import {ReactiveVar} from 'meteor/reactive-var';
+import {Meteor} from "meteor/meteor";
+import './main.html';
 
 Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
@@ -13,19 +14,30 @@ Accounts.ui.config({
 Template.main.onCreated(function mainOnCreated() {
     Meteor.subscribe('checkStatuses');
     Meteor.subscribe('publicStatuses');
-    this.date = new ReactiveVar(moment().format("MM/DD/YYYY"));
-});
+    this.startdate = new ReactiveVar(moment().format('YYYY/MM/DD'));
+    this.enddate = new ReactiveVar(moment().add(1, 'day').format('YYYY/MM/DD'));
 
+    // console.log(this.startdate);
+    // console.log(this.enddate);
+});
 
 Template.main.helpers({
     ownerStatuses() {
         return CheckStatus.find({
             owner: Meteor.userId(),
-            time: {$regex: Template.instance().date.get().split(" ")[0]}
+            createdAt: {
+                '$gte': new Date(Template.instance().startdate.get()),
+                '$lt': new Date(Template.instance().enddate.get())
+            }
         }, {sort: {createdAt: -1}});
     },
     publicS() {
-        return publicStatus.find({time: {$regex: Template.instance().date.get().split(" ")[0]}}, {sort: {createdAt: -1}});
+        return publicStatus.find({
+            createdAt: {
+                '$gte': new Date(Template.instance().startdate.get()),
+                '$lt': new Date(Template.instance().enddate.get())
+            }
+        }, {sort: {createdAt: -1}});
     }
 
 });
@@ -39,7 +51,6 @@ Template.currentStatus.helpers({
         });
         if (last !== undefined) {
             Meteor.call('checkStatuses.setPublic', last._id, false);
-            // console.log(last);
             return last.text;
         }
     }
@@ -51,10 +62,6 @@ function insert(status) {
         text = "Out";
     }
     const time = moment().format("MM/DD/YYYY HH:mm:ss");
-    // let last = CheckStatus.findOne({owner: Meteor.userId()}, {fields: {_id: 1}, sort: {createdAt: -1}, limit: 1});
-    // if (last !== undefined) {
-    //     last = last._id;
-    // }
     Meteor.call('checkStatuses.insert', this._id, text, time);
     Meteor.call('publicStatuses.insert', this._id, text, time);
 }
@@ -70,8 +77,10 @@ Template.main.events({
     },
     'submit .filter'(event, instance) {
         event.preventDefault();
-        let d = event.target.date.value;
-        instance.date.set(d);
+        let date = event.target.daterange.value;
+        date = date.split(" - ");
+        instance.startdate.set(moment(date[0], 'MM/DD/YYYY').format('YYYY/MM/DD'));
+        instance.enddate.set(moment(date[1], 'MM/DD/YYYY').add(1, 'day').format('YYYY/MM/DD'));
     }
 });
 
@@ -92,7 +101,9 @@ Template.checkStatus.helpers({
     }
 });
 
-Template.main.rendered = function () {
+Template.main.rendered = () => {
+
+
     Tracker.autorun(() => {
         let first = null;
         if (Meteor.userId()) {
@@ -109,14 +120,25 @@ Template.main.rendered = function () {
             });
         }
         if (first) {
-            this.$('.datepicker').datepicker({
-                startDate: first.time.split(" ")[0],
-                todayHighlight: true
+            this.$('input[name="daterange"]').daterangepicker({
+                "autoApply": true,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                opens: 'left',
+                minDate: first.time.split(" ")[0],
+            }, function (start, end, label) {
+                $("#filter").click();
+                // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.add(1, 'day').format('YYYY-MM-DD'));
             });
+
         }
     });
 
-
-    this.$('.datepicker').val(moment().format("MM/DD/YYYY"));
 
 };

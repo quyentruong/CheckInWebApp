@@ -45,28 +45,23 @@
 
 
 <template name="main">
-    <div>
-        <form class="d-inline filter">
-            <input name="date" type="text" class="datepicker" placeholder="Select date to filter" value="">
-            <button class="btn btn-primary" type="submit">Filter</button>
-        </form>
-        {{#if currentUser}}
-            <div class="rightElm">
-                <form class="d-inline add-checkIn">
-                    <button class="btn btn-primary checkIn" type="submit">Check In</button>
+    <form class="d-inline filter">
+        <input id="daterange" class="d-inline form-control" type="text" name="daterange" placeholder="Not available"/>
+        <button id="filter" class="btn btn-primary" type="submit">Filter</button>
+    </form>
+    {{#if currentUser}}
+        <div class="rightElm">
+            <form class="d-inline add-checkIn">
+                <button class="btn btn-primary checkIn" type="submit">Check In</button>
+            </form>
+            <form class="d-inline add-checkOut">
+                <button class="btn btn-primary checkOut" type="submit">Check Out</button>
+            </form>
+        </div>
 
-                </form>
-                <form class="d-inline add-checkOut">
-
-                    <button class="btn btn-primary checkOut" type="submit">Check Out</button>
-
-                </form>
-            </div>
-
-        {{else}}
-            <p>User status:</p>
-        {{/if}}
-    </div>
+    {{else}}
+        <p>User status:</p>
+    {{/if}}
     <ul>
         {{#if currentUser}}
             {{#each ownerStatuses}}

@@ -2,6 +2,7 @@
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    font-size: 16px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -41,11 +42,6 @@ li {
     list-style: none;
     padding: 15px;
     border-bottom: #eee solid 1px;
-}
-
-.rightElm {
-    float: right;
-    position: relative;
 }
 
 .delete {
@@ -98,6 +94,27 @@ li {
     }
 
 }
-#username{
+
+#username {
     color: blue;
+}
+
+#filter{
+    visibility: hidden;
+}
+
+.btn-primary {
+    margin-left: 5px;
+}
+
+.rightElm {
+    float: right;
+    position: relative;
+}
+
+.rightside {
+    margin-left: 100px;
+}
+.form-control {
+    width: 30%;
 }
