@@ -14,11 +14,11 @@ Accounts.ui.config({
 Template.main.onCreated(function mainOnCreated() {
     Meteor.subscribe('checkStatuses');
     Meteor.subscribe('publicStatuses');
-    this.startdate = new ReactiveVar(moment().format('YYYY/MM/DD'));
-    this.enddate = new ReactiveVar(moment().add(1, 'day').format('YYYY/MM/DD'));
+    this.startdate = new ReactiveVar(moment().hour(0).minute(0).second(0).toDate());
+    this.enddate = new ReactiveVar(moment().hour(23).minute(59).second(59).toDate());
 
-    // console.log(this.startdate);
-    // console.log(this.enddate);
+    // console.log(Template.instance().startdate.get());
+    // console.log(Template.instance().enddate.get());
 });
 
 Template.main.helpers({
@@ -26,16 +26,16 @@ Template.main.helpers({
         return CheckStatus.find({
             owner: Meteor.userId(),
             createdAt: {
-                '$gte': new Date(Template.instance().startdate.get()),
-                '$lt': new Date(Template.instance().enddate.get())
+                '$gte': Template.instance().startdate.get(),
+                '$lte': Template.instance().enddate.get()
             }
         }, {sort: {createdAt: -1}});
     },
     publicS() {
         return publicStatus.find({
             createdAt: {
-                '$gte': new Date(Template.instance().startdate.get()),
-                '$lt': new Date(Template.instance().enddate.get())
+                '$gte': Template.instance().startdate.get(),
+                '$lte': Template.instance().enddate.get()
             }
         }, {sort: {createdAt: -1}});
     }
@@ -79,8 +79,8 @@ Template.main.events({
         event.preventDefault();
         let date = event.target.daterange.value;
         date = date.split(" - ");
-        instance.startdate.set(moment(date[0], 'MM/DD/YYYY').format('YYYY/MM/DD'));
-        instance.enddate.set(moment(date[1], 'MM/DD/YYYY').add(1, 'day').format('YYYY/MM/DD'));
+        instance.startdate.set(moment(date[0], 'MM/DD/YYYY').hour(0).minute(0).second(0).toDate());
+        instance.enddate.set(moment(date[1], 'MM/DD/YYYY').hour(23).minute(59).second(59).toDate());
     }
 });
 

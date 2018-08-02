@@ -43,7 +43,7 @@ Meteor.methods({
             });
         }
     },
-    'checkStatuses.insert'(id, text, time, last) {
+    'checkStatuses.insert'(id, text, time) {
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
