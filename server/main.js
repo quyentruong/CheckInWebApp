@@ -3,12 +3,7 @@ import '../lib/collections';
 import {CheckStatus, publicStatus} from "../lib/collections";
 
 Meteor.publish('checkStatuses', function checkPublication() {
-    return CheckStatus.find({
-        $or: [
-            {private: {$ne: true}},
-            {owner: this.userId}
-        ]
-    });
+    return CheckStatus.find({owner: this.userId});
 });
 
 Meteor.publish('publicStatuses', function checkPublication() {
@@ -19,7 +14,7 @@ Meteor.methods({
     'publicStatuses.insert'(id, text, time) {
         const userPublic = publicStatus.find(
             {
-                owner: Meteor.userId(),
+                owner: this.userId,
                 time: {$regex: time.split(" ")[0]}
             }, {sort: {createdAt: -1}}).fetch();
         if (userPublic.length === 0) {
@@ -27,12 +22,12 @@ Meteor.methods({
                 text,
                 time,
                 createdAt: new Date(),
-                owner: Meteor.userId(),
+                owner: this.userId,
                 username: Meteor.user().username
             });
         } else {
             publicStatus.update({
-                owner: Meteor.userId(),
+                owner: this.userId,
                 time: {$regex: time.split(" ")[0]}
             }, {
                 $set:
@@ -54,7 +49,7 @@ Meteor.methods({
             text,
             time,
             createdAt: new Date(),
-            owner: Meteor.userId(),
+            owner: this.userId,
             username: Meteor.user().username,
             // private: true
         });

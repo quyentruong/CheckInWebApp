@@ -90,9 +90,9 @@ Template.checkStatus.events({
             Meteor.call('checkStatuses.remove', this._id);
         }
     },
-    'click .toggle-private'() {
-        Meteor.call('checkStatuses.setPrivate', this._id, !this.private);
-    }
+    // 'click .toggle-private'() {
+    //     Meteor.call('checkStatuses.setPrivate', this._id, !this.private);
+    // }
 });
 
 Template.checkStatus.helpers({
